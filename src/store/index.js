@@ -22,7 +22,11 @@ export default function (/* { ssrContext } */) {
 
     // enable strict mode (adds overhead!)
     // for dev mode only
-    strict: process.env.DEV
+    strict: process.env.DEV,
+    state: {
+      api_server: 'https://api2.aleph.im',
+      swap_address: '0xED9d5B040386F394B9ABd34fD59152756b126710'
+    }
   })
 
   return Store
