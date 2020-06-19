@@ -2,7 +2,7 @@
   <div>
     <div class="row">
       <div>{{source_chain}}</div>
-      <div>
+      <div class="q-ml-sm q-mr-sm">
         <q-icon name="double_arrow" />
       </div>
       <div>{{target_chain}}</div>

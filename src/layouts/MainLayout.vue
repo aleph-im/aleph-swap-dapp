@@ -1,6 +1,6 @@
 <template>
   <q-layout view="hhh lpR fff">
-    <q-header class="bg-transparent text-black q-pa-sm">
+    <q-header class="bg-transparent text-white q-pa-sm">
       <q-toolbar>
         <q-toolbar-title class="logo">
             <img src="~/assets/img/logo.svg">
@@ -17,8 +17,8 @@
       <router-view />
     </q-page-container>
 
-    <q-footer class="bg-transparent text-black q-pa-sm">
-      Copyright ©2020-present <a href="https://aleph.im/">aleph.im project</a>, all rights reserved. 
+    <q-footer class="bg-white text-center text-black q-pa-sm">
+      <strong>Copyright ©{{year}} <a class="text-black" href="https://aleph.im/">aleph.im</a>, all rights reserved.</strong>
     </q-footer>
 
   </q-layout>
@@ -34,6 +34,7 @@ export default {
 
   data () {
     return {
+      year: new Date().getFullYear()
     }
   }
 }
@@ -45,6 +46,8 @@ export default {
     position: absolute;
     margin-top: -0.2rem;
     margin-left: -1rem;
+    opacity: 1;
+    color: white;
   }
 }
 
@@ -54,6 +57,7 @@ export default {
   margin: 0 auto;
   padding: 0 10px;
   word-wrap: normal;
+  color: white;
 
   .title {
     font-size: 3rem;
