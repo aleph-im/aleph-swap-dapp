@@ -39,13 +39,12 @@
           {{swap.content.status}}
           </q-tooltip>
           <q-icon v-if="swap.content.status == 'pending'" name="schedule" />
-          <q-icon v-else-if="swap.content.status == 'failed'" name="warning" />
-          <q-icon v-else-if="swap.content.status == 'finished'" name="done" />
+          <q-icon class="text-negative" v-else-if="swap.content.status == 'failed'" name="warning" />
+          <q-icon class="text-secondary" v-else-if="swap.content.status == 'finished'" name="done" />
           <q-icon v-else name="help" />
         </div>
         <div>
           <q-btn
-            color="grey"
             round
             flat
             dense
@@ -58,7 +57,7 @@
     <q-slide-transition>
         <div v-show="expanded">
           <q-separator />
-          <q-card-section>
+          <q-card-section class="container">
             <div v-if="swap.content.source.tx" class="text-subtitle2">
               Tx from:<br />
               <tx-hash :hash="swap.content.source.tx" :chain="swap.content.source.chain" />
@@ -98,5 +97,8 @@ span {
     max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+.container {
+  background-color: rgb(245, 245, 245);
 }
 </style>

@@ -28,4 +28,10 @@ span {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+span a {
+    color: #374992;
+    text-decoration: none;
+    border-bottom: 1px solid #374992;
+}
 </style>
