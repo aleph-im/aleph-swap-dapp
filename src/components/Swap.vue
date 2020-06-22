@@ -4,7 +4,7 @@
       <q-card-section class="q-pb-none">
         <div class="text-h6">Swap tokens</div>
       </q-card-section>
-      <q-card-section horizontal class="justify-between">
+      <q-card-section horizontal class="justify-between" v-if="!out_txid">
         <q-card-section class="col">
           <q-select v-model="source_chain" :options="source_chains" label="Source chain" />
           <div v-if="source_chain == 'NEO'">
@@ -24,8 +24,11 @@
                   Current balance: {{aleph_balance}}
                 </template>
               </q-input>
-              {{source_balances}}
             </div>
+          </div>
+          <div v-else-if="source_chain == 'NULS2'">
+            <q-input bottom-slots v-model.number="amount" label="Amount" type="number">
+            </q-input>
           </div>
         </q-card-section>
         <q-card-section class="self-center">
@@ -41,10 +44,19 @@
           </q-field>
         </q-card-section>
       </q-card-section>
-      <q-card-section class="text-right" v-if="">
+      <q-card-section class="text-right" v-if="(source_account.address != undefined)&&!check_address()&&!out_txid">
         <q-btn @click="do_swap" color="primary">
           Swap !
         </q-btn>
+      </q-card-section>
+      <q-card-section class="text-center" v-else-if="(source_chain == 'NULS2')&&!check_address()&&!out_txid">
+        To proceed, please send <strong>{{amount}}</strong> ALEPH<br />
+        to <strong>{{targets.NULS2}}</strong><br/>
+        with remark <strong>{{target_address}}</strong>
+      </q-card-section>
+      <q-card-section v-if="out_txid">
+        Transaction issued:<br />
+        <tx-hash :hash="out_txid" :chain="source_chain" />
       </q-card-section>
     </q-card>
     <div class="row">
@@ -63,10 +75,13 @@ import {
   get_nuls_balance_info, get_ethereum_balance_info, get_neo_balance_info
 } from '../services/balances'
 
+import TxHash from './TxHash'
+
 export default {
   name: 'Swap',
   props: [],
   components: {
+    TxHash
   },
   data() {
     return {
@@ -75,6 +90,7 @@ export default {
       source_balances: {},
       target_chain: 'ETH',
       target_address: '',
+      out_txid: null,
       amount: 0,
       source_chains: [
         'NULS2',
@@ -82,8 +98,7 @@ export default {
       ],
       target_chains: [
         'NULS2',
-        'ETH',
-        'NEO'
+        'ETH'
       ],
       contracts: {
         'NULS2': 'NULSd6HgyZkiqLnBzTaeSQfx1TNg2cqbzq51h',
@@ -91,7 +106,7 @@ export default {
         'NEO': '2efdb22c152896964665d0a8214dc7bd59232162'
       },
       targets: {
-        'NULS2': '',
+        'NULS2': 'NULSd6HgUUzDe6HxEB3SoyPR2V1DTvnaBFnVV',
         'ETH': '',
         'NEO': 'AGSx4cCpJbv5b767Yr2xSvuxgYPP8evejL'
       }
@@ -163,6 +178,10 @@ export default {
             remark: this.target_address
           })
           console.log(result)
+
+          if (result.txid) {
+            this.out_txid = result.txid
+          }
         }
       }
     }
