@@ -13,7 +13,7 @@
   "dependencies": {
     "@quasar/extras": "^1.0.0",
     "aleph-js": "^0.4.3",
-    "axios": "^0.18.1",
+    "axios": "^0.21.1",
     "ethers": "^5.0.30",
     "neo-dapi": "^2.0.4",
     "quasar": "^1.0.0",
