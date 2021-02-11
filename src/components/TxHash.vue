@@ -10,9 +10,11 @@ export default {
   computed: {
     url() {
       if (this.chain == 'NULS2')
-        return `https://nuls.world/transactions/${this.hash}`
+        return `https://nulscan.io/transaction/info?hash=${this.hash}`
       else if (this.chain == 'ETH')
         return `https://etherscan.io/tx/${this.hash}`
+      else if (this.chain == 'BSC')
+        return `https://bscscan.com/tx/${this.hash}`
       else if (this.chain == 'NEO')
         return `https://neoscan.io/transaction/${this.hash}`
       else
