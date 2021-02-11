@@ -51,7 +51,8 @@ export default {
     async get_swaps() {
       this.refreshing = true
       let result = await posts.get_posts('xchain-swap', {
-        addresses: [this.swap_address]
+        addresses: [this.swap_address],
+        api_server: this.api_server
       })
       console.log(result)
       this.swaps = result.posts

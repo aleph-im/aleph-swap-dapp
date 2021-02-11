@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { get_erc20_contract } from './ethereum'
 
 export async function get_nuls_balance_info(address, explorer_url) {
   let response = await axios.get(`${explorer_url}/addresses/${address}.json`)
@@ -14,6 +15,14 @@ export async function get_nuls_balance_info(address, explorer_url) {
     balance_info[holding.symbol] = holding.balance / (10**holding.decimals)
   }
   return balance_info
+}
+
+export async function get_web3_balance_info(address, provider, erc20_adress) {
+  const contract = get_erc20_contract(erc20_adress, provider)
+  let balance = await contract.balanceOf(address)
+  let decimals = await contract.decimals()
+  console.log(balance, decimals)
+  return balance / (10**decimals)
 }
 
 export async function get_ethereum_balance_info(address, explorer_url) {
