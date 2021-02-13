@@ -227,6 +227,7 @@ export default {
       }
     },
     async login_metamask() {
+      await window.ethereum.enable()
       this.provider = new ethers.providers.Web3Provider(window.ethereum)
       this.provider.on("network", async (newNetwork, oldNetwork) => {
         console.log(newNetwork, oldNetwork)
