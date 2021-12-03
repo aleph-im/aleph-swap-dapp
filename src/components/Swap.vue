@@ -7,25 +7,6 @@
       <q-card-section horizontal class="justify-between" v-if="!out_txid">
         <q-card-section class="col">
           <q-select v-model="source_chain" :options="source_chains" label="Source chain" />
-          <div v-if="source_chain == 'NEO'">
-            <div v-if="(source_account==null)||(source_account.type != 'NEO')">
-              Login with:
-              <br />
-              <q-btn color="primary" size="sm" @click="login_o3"><img src="../assets/img/o3.png" height="24px"></q-btn>
-            </div>
-            <div v-else>
-              <q-field label="Address" stack-label>
-                <template v-slot:control>
-                  <div class="self-center full-width no-outline" tabindex="0">{{source_account.address}}</div>
-                </template>
-              </q-field>
-              <q-input bottom-slots v-model.number="amount" label="Amount" type="number">
-                <template v-slot:hint>
-                  Current balance: {{aleph_balance}}
-                </template>
-              </q-input>
-            </div>
-          </div>
           <div v-if="['ETH', 'BSC'].includes(source_chain)">
             <div v-if="(source_account==null)||(source_account.type != source_chain)">
               Login with:
@@ -96,10 +77,9 @@
   </div>
 </template>
 <script>
-import neoDapi from 'neo-dapi';
 import { ethers } from "ethers";
 import {
-  get_nuls_balance_info, get_ethereum_balance_info, get_neo_balance_info, get_web3_balance_info
+  get_nuls_balance_info, get_ethereum_balance_info, get_web3_balance_info
 } from '../services/balances'
 
 import TxHash from './TxHash'
@@ -127,14 +107,13 @@ export default {
       provider: null,
       source_chains: [
         'NULS2',
-        'NEO',
         'ETH',
         'BSC'
       ],
       target_chains: [
         'NULS2',
-        'ETH',
-        'BSC'
+        'ETH'
+        // 'BSC'
       ],
       contracts: {
         'NULS2': 'NULSd6HgyZkiqLnBzTaeSQfx1TNg2cqbzq51h',
@@ -145,8 +124,7 @@ export default {
       targets: {
         'NULS2': 'NULSd6HgUUzDe6HxEB3SoyPR2V1DTvnaBFnVV',
         'ETH': '0x047f18e7F21Aa714c6a5f4B346318Eb384434A4b',
-        'BSC': '0x5594eA3f85272784f66A282FB3D78fe002B92356',
-        'NEO': 'AGSx4cCpJbv5b767Yr2xSvuxgYPP8evejL'
+        'BSC': '0x5594eA3f85272784f66A282FB3D78fe002B92356'
       },
       chain_ids: {
         'ETH': 1,
@@ -205,16 +183,6 @@ export default {
     }
   },
   methods: {
-    async login_o3() {
-      let account = await neoDapi.getAccount()
-      console.log(account)
-      this.source_account = {
-        'type': 'NEO',
-        'address': account.address,
-        'label': account.label,
-        'source': 'o3'
-      }
-    },
     async update_eth_account() {
       this.source_chain = this.rev_chain_ids[this.eth_chain_id]
       let signer = this.provider.getSigner()
@@ -273,10 +241,6 @@ export default {
             account.address, account.signer,
             this.contracts['BSC']
           )}
-      } else if (account.type === 'NEO') {
-        return await get_neo_balance_info(
-          account.address, 'https://api.neoscan.io'
-        )
       } else {
         return {}
       }
@@ -320,24 +284,7 @@ export default {
       }
     },
     async do_swap() {
-      if (this.source_account.type == "NEO") {
-        if (this.source_account.source == "o3") {
-          console.log("swapping o3")
-          let result = await neoDapi.send({
-            fromAddress: this.source_account.address,
-            toAddress: this.targets.NEO,
-            amount: this.amount.toString(),
-            asset: this.contracts.NEO,
-            remark: this.prepared_target
-          })
-          console.log(result)
-
-          if (result.txid) {
-            this.out_txid = result.txid
-            await this.$emit('sent')
-          }
-        }
-      } else if (this.source_account.meta == 'ETH') {
+      if (this.source_account.meta == 'ETH') {
         this.swapping = true
         let contract = get_swap_contract(
           this.targets[this.source_account.type],
